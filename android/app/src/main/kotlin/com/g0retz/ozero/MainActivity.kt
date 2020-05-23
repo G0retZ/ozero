@@ -1,4 +1,4 @@
-package com.example.ozero
+package com.g0retz.ozero
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
