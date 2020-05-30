@@ -54,3 +54,48 @@ class TurnBloc extends Bloc<TurnAction, int> {
     return result;
   }
 }
+
+enum TurnHistoryAction { PREV_TURN, NEXT_TURN }
+
+// Controls the players turns history.
+// Input - current turn history action
+// Output - selected turn index
+class TurnHistoryBloc extends Bloc<TurnHistoryAction, int> {
+  final Bloc<TurnAction, int> _turnBloc;
+  int _selectedTurn;
+  int _currentTurn;
+
+  TurnHistoryBloc(this._turnBloc) {
+    _turnBloc.data.listen((event) {
+      _currentTurn = event;
+      if (_selectedTurn == null) {
+        iSink.add(_selectedTurn = _currentTurn);
+      }
+    });
+  }
+
+  @override
+  Stream<int> get data =>
+      _selectedTurn != null ? super.data.startWith(_selectedTurn) : super.data;
+
+  @override
+  Future<bool> perform(TurnHistoryAction action) async {
+    var turn = 0;
+    switch (action) {
+      case TurnHistoryAction.PREV_TURN:
+        turn = RangeError.checkValueInInterval(
+            ArgumentError.checkNotNull(_selectedTurn, "_selectedTurn") - 1,
+            0,
+            ArgumentError.checkNotNull(_currentTurn, "_currentTurn"));
+        break;
+      case TurnHistoryAction.NEXT_TURN:
+        turn = RangeError.checkValueInInterval(
+            ArgumentError.checkNotNull(_selectedTurn, "_selectedTurn") + 1,
+            0,
+            ArgumentError.checkNotNull(_currentTurn, "_currentTurn"));
+        break;
+    }
+    iSink.add(_selectedTurn = turn);
+    return true;
+  }
+}

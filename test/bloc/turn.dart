@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:ozero/bloc/common.dart';
 import 'package:ozero/bloc/turn.dart';
 import 'package:ozero/storage/common.dart';
 
 class MockTurnStorage extends Mock implements DataStorage<int> {}
+
+class MockTurnBloc extends Mock implements Bloc<TurnAction, int> {}
 
 void main() {
   /// Test Turn bloc
@@ -300,6 +303,126 @@ void main() {
       expect(action3, true);
       expect(action4, true);
       expect(action5, true);
+    });
+  });
+
+  /// Test Turn History bloc
+  group('Turn history control logic', () {
+    test('Interact with turn bloc at creation time', () {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => StreamController<int>().stream);
+
+      // When
+      TurnHistoryBloc(turnBloc);
+
+      // Then
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
+    test('Error next without current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(null));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+
+      // When
+      await Future.value();
+
+      // Then
+      expect(
+          turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN),
+          throwsA(
+              (e) => e is ArgumentError && e.message == 'Must not be null'));
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
+    test('Error prev without current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(null));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+
+      // When
+      await Future.value();
+
+      // Then
+      expect(
+          turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN),
+          throwsA(
+              (e) => e is ArgumentError && e.message == 'Must not be null'));
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
+    test('Error next with current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(6));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+
+      // When
+      await Future.value();
+
+      // Then
+      expect(turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN),
+          throwsA((e) => e is RangeError && e.message == 'Invalid value'));
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
+    test('Error prev with first turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(0));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+
+      // When
+      await Future.value();
+
+      // Then
+      expect(turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN),
+          throwsA((e) => e is RangeError && e.message == 'Invalid value'));
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
+    test('Answer success to prev and next with current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(6));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+      final queue = StreamQueue(turnHistoryBloc.data);
+      queue.lookAhead(1); //subscribe to broadcast
+
+      // When
+      await Future.value();
+      final action1 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action2 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action3 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action4 =
+          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      final action5 =
+          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      final action6 =
+          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      turnHistoryBloc.dispose();
+
+      // Then
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+      expect(queue, emitsInOrder([6, 5, 4, 3, 4, 5, 6, emitsDone]));
+      expect(action1, true);
+      expect(action2, true);
+      expect(action3, true);
+      expect(action4, true);
+      expect(action5, true);
+      expect(action6, true);
     });
   });
 }
