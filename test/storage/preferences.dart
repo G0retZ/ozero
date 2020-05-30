@@ -21,8 +21,7 @@ void main() {
       expect(_currentTurn, null);
     });
 
-    test(
-        'Save and get back current turn from storage whithout turn inside',
+    test('Save and get back current turn from storage whithout turn inside',
         () async {
       // Given
       (await SharedPreferences.getInstance()).clear();
@@ -48,18 +47,17 @@ void main() {
       expect(_currentTurn, 13);
     });
 
-    test(
-        'Save and get back current turn from storage whith turn inside',
-        () async {
-      // Given
-      CurrentTurnStorage _currentTurnStorage = CurrentTurnStorage();
+    test('Save and get back current turn from storage whith turn inside',
+            () async {
+          // Given
+          CurrentTurnStorage _currentTurnStorage = CurrentTurnStorage();
 
-      // When
-      final _success = await _currentTurnStorage.saveData(7);
-      final _currentTurn = await _currentTurnStorage.loadData();
+          // When
+          final _success = await _currentTurnStorage.saveData(7);
+          final _currentTurn = await _currentTurnStorage.loadData();
 
-      // Then
-      expect(_success, true);
+          // Then
+          expect(_success, true);
       expect(_currentTurn, 7);
     });
   });

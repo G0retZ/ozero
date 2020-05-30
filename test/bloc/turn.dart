@@ -416,7 +416,18 @@ void main() {
       // Then
       verify(turnBloc.data);
       verifyNoMoreInteractions(turnBloc);
-      expect(queue, emitsInOrder([6, 5, 4, 3, 4, 5, 6, emitsDone]));
+      expect(
+          queue,
+          emitsInOrder([
+            [6, 6],
+            [5, 6],
+            [4, 6],
+            [3, 6],
+            [4, 6],
+            [5, 6],
+            [6, 6],
+            emitsDone
+          ]));
       expect(action1, true);
       expect(action2, true);
       expect(action3, true);
