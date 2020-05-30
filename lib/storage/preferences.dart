@@ -39,26 +39,23 @@ class ListDataStorage<D> extends DataStorage<List<D>> {
 }
 
 class PlayersStorage extends ListDataStorage<Player> {
-  PlayersStorage(String key, Player Function() create)
-      : super('player', (json) => Player.fromJson(json));
+  PlayersStorage() : super('player', (json) => Player.fromJson(json));
 }
 
 class EarningsStorage extends ListDataStorage<Earning> {
-  EarningsStorage(String key, Remittance Function() create)
-      : super('earning', (json) => Earning.fromJson(json));
+  EarningsStorage() : super('earning', (json) => Earning.fromJson(json));
 }
 
 class RemittancesStorage extends ListDataStorage<Remittance> {
-  RemittancesStorage(String key, Remittance Function() create)
+  RemittancesStorage()
       : super('remittance', (json) => Remittance.fromJson(json));
 }
 
 class MoneyLossStorage extends ListDataStorage<DirtyTrick> {
-  MoneyLossStorage(String key, DirtyTrick Function() create)
-      : super('moneyLoss', (json) => DirtyTrick.fromJson(json));
+  MoneyLossStorage() : super('moneyLoss', (json) => DirtyTrick.fromJson(json));
 }
 
 class ReputationLossStorage extends ListDataStorage<DirtyTrick> {
-  ReputationLossStorage(String key, DirtyTrick Function() create)
+  ReputationLossStorage()
       : super('reputationLoss', (json) => DirtyTrick.fromJson(json));
 }
