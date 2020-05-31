@@ -23,7 +23,7 @@ abstract class Bloc<A, D> {
 }
 
 extension StreamTools<T> on Stream<T> {
-  startWith<T>(T first) async* {
+  Stream<T> startWith(T first) async* {
     ArgumentError.checkNotNull(first, 'first');
     yield first;
     await for (var item in this) {
@@ -31,7 +31,7 @@ extension StreamTools<T> on Stream<T> {
     }
   }
 
-  concatWith<T>(Stream<T> nextStream) async* {
+  Stream<T> concatWith(Stream<T> nextStream) async* {
     ArgumentError.checkNotNull(nextStream, 'nextStream');
     await for (var item in this) {
       yield item;
@@ -43,7 +43,7 @@ extension StreamTools<T> on Stream<T> {
 }
 
 extension FutureTools<T> on Future<T> {
-  concatWith<T>(Stream<T> nextStream) async* {
+  Stream<T> concatWith(Stream<T> nextStream) async* {
     ArgumentError.checkNotNull(nextStream, 'nextStream');
     yield await this;
     await for (var item in nextStream) {
