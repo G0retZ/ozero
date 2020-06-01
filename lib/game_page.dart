@@ -28,7 +28,7 @@ class GamePage extends StatelessWidget {
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
-                      Icons.arrow_back,
+                      Icons.arrow_back_ios,
                     ),
                     onPressed: snapshot.data != null && snapshot.data
                         ? () => Providers.turnHistoryBloc
@@ -51,10 +51,7 @@ class GamePage extends StatelessWidget {
                           turns: animation,
                         );
                       },
-                      child: TurnPage(
-                        turn: snapshot.data,
-                        key: ValueKey<int>(snapshot.data),
-                      ),
+                      child: getTurnPage(snapshot.data),
                     );
                   },
                 ),
@@ -66,7 +63,7 @@ class GamePage extends StatelessWidget {
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
-                      Icons.arrow_forward,
+                      Icons.arrow_forward_ios,
                     ),
                     onPressed: snapshot.data != null && snapshot.data
                         ? () => Providers.turnHistoryBloc
