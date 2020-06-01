@@ -75,9 +75,20 @@ class GamePage extends StatelessWidget {
             ],
           ),
         ),
-        RaisedButton(
-          onPressed: () => Providers.turnBloc.perform(TurnAction.NEXT_TURN),
-          child: Text('Next Turn'),
+        StreamBuilder<bool>(
+          stream: Providers.turnHistoryBloc.data
+              .map((event) => event != null && event[0] == event[1])
+              .distinct(),
+          builder: (context, snapshot) {
+            var isCurrent = snapshot.data != null && snapshot.data;
+            return RaisedButton(
+              onPressed: isCurrent
+                  ? () => Providers.turnBloc.perform(TurnAction.NEXT_TURN)
+                  : () => Providers.turnHistoryBloc
+                      .perform(TurnHistoryAction.CURRENT_TURN),
+              child: isCurrent ? Text('Next Turn') : Text('Go to current'),
+            );
+          },
         ),
       ],
     );
