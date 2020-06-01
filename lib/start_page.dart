@@ -55,7 +55,7 @@ class StartPage extends StatelessWidget {
                     'Number of players',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(0xFF, 0, 0, 0),
+                      color: Color(0xFF000000),
                       fontSize: 20,
                     ),
                   ),
@@ -69,7 +69,7 @@ class StartPage extends StatelessWidget {
                           '${snapshot.data}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(0xFF, 0, 0, 0),
+                            color: Color(0xFF000000),
                             fontSize: 48,
                           ),
                         );

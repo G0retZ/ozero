@@ -20,7 +20,7 @@ Widget getPlayerSummary(Player player) {
               '${player.name}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(0xFF, 0, 0, 0),
+                color: Color(0xFF000000),
                 fontSize: 16,
               ),
             ),
@@ -28,23 +28,23 @@ Widget getPlayerSummary(Player player) {
               children: <Widget>[
                 Icon(
                   Icons.monetization_on,
-                  color: Color.fromARGB(0xFF, 0, 0x80, 0),
+                  color: Color(0xFF008000),
                 ),
                 Text(
                   '${player.money}',
                   style: TextStyle(
-                    color: Color.fromARGB(0xFF, 0, 0, 0),
+                    color: Color(0xFF000000),
                     fontSize: 16,
                   ),
                 ),
                 Icon(
                   Icons.star_half,
-                  color: Color.fromARGB(0xFF, 0xFF, 0x80, 0),
+                  color: Color(0xFFFFD700),
                 ),
                 Text(
                   '${player.reputation}',
                   style: TextStyle(
-                    color: Color.fromARGB(0xFF, 0, 0, 0),
+                    color: Color(0xFF000000),
                     fontSize: 16,
                   ),
                 ),
