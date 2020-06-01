@@ -435,5 +435,60 @@ void main() {
       expect(action5, true);
       expect(action6, true);
     });
+
+    test('Update selected success with next current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      final streamController = StreamController<int>();
+      when(turnBloc.data).thenAnswer((_) => streamController.stream);
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+      final queue = StreamQueue(turnHistoryBloc.data);
+      queue.lookAhead(1); //subscribe to broadcast
+
+      // When
+      streamController.sink.add(6);
+      await Future.value();
+      final action1 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action2 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action3 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      streamController.sink.add(7);
+      await Future.value();
+      final action4 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      final action5 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      streamController.sink.add(2);
+      await Future.value();
+      final action6 =
+          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      turnHistoryBloc.dispose();
+
+      // Then
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+      expect(
+          queue,
+          emitsInOrder([
+            [6, 6],
+            [5, 6],
+            [4, 6],
+            [3, 6],
+            [7, 7],
+            [6, 7],
+            [5, 7],
+            [2, 2],
+            [1, 2],
+            emitsDone
+          ]));
+      expect(action1, true);
+      expect(action2, true);
+      expect(action3, true);
+      expect(action4, true);
+      expect(action5, true);
+      expect(action6, true);
+    });
   });
 }

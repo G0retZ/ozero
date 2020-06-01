@@ -68,9 +68,7 @@ class TurnHistoryBloc extends Bloc<TurnHistoryAction, List<int>> {
   TurnHistoryBloc(this._turnBloc) {
     _turnBloc.data.listen((event) {
       _currentTurn = event;
-      if (_selectedTurn == null) {
-        iSink.add([_selectedTurn = _currentTurn, _currentTurn]);
-      }
+      iSink.add([_selectedTurn = _currentTurn, _currentTurn]);
     });
   }
 
