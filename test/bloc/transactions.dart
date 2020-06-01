@@ -140,10 +140,10 @@ void main() {
           TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
@@ -172,13 +172,13 @@ void main() {
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
@@ -208,13 +208,13 @@ void main() {
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
@@ -252,13 +252,13 @@ void main() {
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
@@ -341,14 +341,14 @@ void main() {
 
     test('Answer failed to remove transaction by index', () async {
       // Given
-      final earning = Earning(0, 0, 0);
+      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
           .thenAnswer((_) => Future.value([earning]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
@@ -379,12 +379,13 @@ void main() {
 
     test('Remove transactions by index', () async {
       // Given
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
       final transactionsStorage = MockTransactionsStorage();
-      when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([
+      when(transactionsStorage.loadData()).thenAnswer((_) =>
+          Future.value([
             earning1,
             earning2,
             earning3,
@@ -423,17 +424,17 @@ void main() {
     test('Error failed to replace by index without saved transactions',
         () async {
       // Given
-      final earning = Earning(0, 0, 0);
-      final transactionsStorage = MockTransactionsStorage();
-      when(transactionsStorage.loadData())
-          .thenAnswer((_) => Future.value(null));
-      final TransactionsBloc<Earning> transactionsBloc =
+          final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
+          final transactionsStorage = MockTransactionsStorage();
+          when(transactionsStorage.loadData())
+              .thenAnswer((_) => Future.value(null));
+          final TransactionsBloc<Earning> transactionsBloc =
           TransactionsBloc(transactionsStorage);
 
-      // When
-      await Future.value();
+          // When
+          await Future.value();
 
-      // Then
+          // Then
       expect(
           transactionsBloc
               .perform(TransactionsAction(index: -1, transaction: earning)),
@@ -455,11 +456,11 @@ void main() {
 
     test('Error failed to replace by wrong index', () async {
       // Given
-      final earning = Earning(0, 0, 0);
+      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
 
       // When
       await Future.value();
@@ -483,15 +484,15 @@ void main() {
 
     test('Answer failed to replace by index with saved transactions', () async {
       // Given
-      final earning = Earning(0, 0, 0);
-      final earning1 = Earning(0, 0, 0);
+      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
+      final earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
           .thenAnswer((_) => Future.value([earning]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
       final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
@@ -526,13 +527,14 @@ void main() {
 
     test('Replace transactions by index', () async {
       // Given
-      var earning1 = Earning(0, 0, 0);
-      var earning2 = Earning(0, 1, 2);
-      var earning3 = Earning(0, 2, 3);
-      var earning4 = Earning(0, 3, 4);
-      var earning5 = Earning(0, 4, 5);
+      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
+      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
+      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
+      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
+      var earning5 = Earning(playerTurn: 0, money: 4, reputation: 5);
       final transactionsStorage = MockTransactionsStorage();
-      when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([
+      when(transactionsStorage.loadData()).thenAnswer((_) =>
+          Future.value([
             earning1,
             earning2,
             earning3,

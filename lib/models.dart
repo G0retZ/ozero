@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class JsonEmptyChecker {
   JsonEmptyChecker.fromJson(Map<String, dynamic> json) {
     if (json.keys.length > 0) {
@@ -12,8 +14,12 @@ class Player extends JsonEmptyChecker {
   final int money;
   final int reputation;
 
-  Player(this.name, this.image, this.money, this.reputation)
-      : super.fromJson({});
+  Player({
+    @required this.name,
+    @required this.image,
+    @required this.money,
+    @required this.reputation,
+  }) : super.fromJson({});
 
   Player.fromJson(Map<String, dynamic> json)
       : name = ArgumentError.checkNotNull(json.remove('name'), 'name'),
@@ -36,17 +42,22 @@ class Earning extends JsonEmptyChecker {
   final int money;
   final int reputation;
 
-  Earning(this.playerTurn, this.money, this.reputation) : super.fromJson({});
+  Earning({
+    @required this.playerTurn,
+    @required this.money,
+    @required this.reputation,
+  }) : super.fromJson({});
 
   Earning.fromJson(Map<String, dynamic> json)
       : playerTurn =
-            ArgumentError.checkNotNull(json.remove('playerTurn'), 'playerTurn'),
+  ArgumentError.checkNotNull(json.remove('playerTurn'), 'playerTurn'),
         money = ArgumentError.checkNotNull(json.remove('money'), 'money'),
         reputation =
-            ArgumentError.checkNotNull(json.remove('reputation'), 'reputation'),
+        ArgumentError.checkNotNull(json.remove('reputation'), 'reputation'),
         super.fromJson(json);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'senderTurn': playerTurn,
         'money': money,
         'reputation': reputation,
@@ -58,17 +69,22 @@ class Remittance extends JsonEmptyChecker {
   final int receiver;
   final int money;
 
-  Remittance(this.senderTurn, this.receiver, this.money) : super.fromJson({});
+  Remittance({
+    @required this.senderTurn,
+    @required this.receiver,
+    @required this.money,
+  }) : super.fromJson({});
 
   Remittance.fromJson(Map<String, dynamic> json)
       : senderTurn =
-            ArgumentError.checkNotNull(json.remove('senderTurn'), 'senderTurn'),
+  ArgumentError.checkNotNull(json.remove('senderTurn'), 'senderTurn'),
         receiver =
-            ArgumentError.checkNotNull(json.remove('receiver'), 'senderTurn'),
+        ArgumentError.checkNotNull(json.remove('receiver'), 'senderTurn'),
         money = ArgumentError.checkNotNull(json.remove('money'), 'senderTurn'),
         super.fromJson(json);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'senderTurn': senderTurn,
         'receiver': receiver,
         'money': money,
@@ -81,18 +97,23 @@ class DirtyTrick extends JsonEmptyChecker {
   final int fee;
   final int loss;
 
-  DirtyTrick(this.victimTurn, this.scum, this.fee, this.loss)
-      : super.fromJson({});
+  DirtyTrick({
+    @required this.victimTurn,
+    @required this.scum,
+    @required this.fee,
+    @required this.loss,
+  }) : super.fromJson({});
 
   DirtyTrick.fromJson(Map<String, dynamic> json)
       : victimTurn =
-            ArgumentError.checkNotNull(json.remove('victimTurn'), 'victimTurn'),
+  ArgumentError.checkNotNull(json.remove('victimTurn'), 'victimTurn'),
         scum = ArgumentError.checkNotNull(json.remove('scum'), 'scum'),
         fee = ArgumentError.checkNotNull(json.remove('fee'), 'fee'),
         loss = ArgumentError.checkNotNull(json.remove('loss'), 'loss'),
         super.fromJson(json);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'victimTurn': victimTurn,
         'scum': scum,
         'fee': fee,
