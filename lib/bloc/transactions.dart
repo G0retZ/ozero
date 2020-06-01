@@ -35,7 +35,7 @@ class TransactionsBloc<D> extends Bloc<TransactionsAction<D>, List<D>> {
   Future<bool> perform(TransactionsAction<D> action) async {
     var result = false;
     if (action == null) {
-      ArgumentError.checkNotNull(_transactions, "_transactions");
+      ArgumentError.checkNotNull(_transactions, '_transactions');
       result = await tryToSave(null);
     } else if (action.index == null && action.transaction == null) {
       throw StateError('Illegal action (null, null)');
@@ -45,13 +45,13 @@ class TransactionsBloc<D> extends Bloc<TransactionsAction<D>, List<D>> {
     } else if (action.index != null && action.transaction == null) {
       final index = RangeError.checkValidIndex(
         action.index,
-        ArgumentError.checkNotNull(_transactions, "_transactions"),
+        ArgumentError.checkNotNull(_transactions, '_transactions'),
       );
       result = await tryToSave(_transactions.toList()..removeAt(index));
     } else if (action.index != null && action.transaction != null) {
       final index = RangeError.checkValidIndex(
         action.index,
-        ArgumentError.checkNotNull(_transactions, "_transactions"),
+        ArgumentError.checkNotNull(_transactions, '_transactions'),
       );
       result = await tryToSave(_transactions.toList()
         ..replaceRange(index, index + 1, [action.transaction]));

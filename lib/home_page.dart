@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
           child: Image(
             width: max(width, height),
             height: max(width, height),
-            image: AssetImage("images/Splash.jpeg"),
+            image: AssetImage('images/Splash.jpeg'),
           ),
         ),
         Container(

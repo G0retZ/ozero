@@ -28,7 +28,7 @@ class PlayersBloc extends Bloc<int, List<Player>> {
   Future<bool> perform(int action) async {
     var result = false;
     if (action == null) {
-      ArgumentError.checkNotNull(_players, "_players");
+      ArgumentError.checkNotNull(_players, '_players');
       result = await _playersStorage.saveData(null);
       if (result) {
         iSink.add(_players = null);

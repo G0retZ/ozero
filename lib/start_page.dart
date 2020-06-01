@@ -28,7 +28,7 @@ class StartPage extends StatelessWidget {
                 children: [
                   RaisedButton(
                     onPressed: () => Providers.playersBloc.perform(null),
-                    child: Text("Cancel"),
+                    child: Text('Cancel'),
                   ),
                   Expanded(
                     child: ListView.builder(
@@ -42,7 +42,7 @@ class StartPage extends StatelessWidget {
                   RaisedButton(
                     onPressed: () =>
                         Providers.turnBloc.perform(TurnAction.START_GAME),
-                    child: Text("Start game"),
+                    child: Text('Start game'),
                   ),
                 ],
               );
@@ -120,7 +120,7 @@ class StartPage extends StatelessWidget {
                       return RaisedButton(
                         onPressed: () =>
                             Providers.playersBloc.perform(snapshot.data),
-                        child: Text("Create game"),
+                        child: Text('Create game'),
                       );
                     },
                   ),
