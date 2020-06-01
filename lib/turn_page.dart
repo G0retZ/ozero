@@ -26,7 +26,7 @@ Widget getTurnPage(int turn) {
                   .map((event) => event[turn % event.length].name),
               builder: (context, snapshot) {
                 return Text(
-                  snapshot.data,
+                  '${turn + 1}. ${snapshot.data}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF000000),
