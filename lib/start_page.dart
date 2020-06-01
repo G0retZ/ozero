@@ -5,6 +5,7 @@ import 'package:ozero/bloc/common.dart';
 import 'package:ozero/config.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/models.dart';
+import 'package:ozero/player_summary.dart';
 
 import 'bloc/turn.dart';
 
@@ -15,7 +16,7 @@ class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(32),
+      padding: EdgeInsets.only(top: 32, bottom: 32),
       width: double.infinity,
       height: double.infinity,
       child: Center(
@@ -30,15 +31,13 @@ class StartPage extends StatelessWidget {
                     onPressed: () => Providers.playersBloc.perform(null),
                     child: Text("Cancel"),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 32, bottom: 32),
-                    child: Text(
-                      '${snapshot.data.map((e) => e.name)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(0xFF, 0, 0, 0),
-                        fontSize: 24,
-                      ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(top: 32, bottom: 32),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int position) {
+                        return getPlayerSummary(snapshot.data[position]);
+                      },
                     ),
                   ),
                   RaisedButton(
@@ -78,7 +77,7 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 32),
+                    padding: EdgeInsets.only(bottom: 32, left: 32, right: 32),
                     child: SliderTheme(
                       data: SliderTheme.of(context).copyWith(
                         activeTrackColor: Colors.green[700],
