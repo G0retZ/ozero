@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ozero/bloc/common.dart';
 import 'package:ozero/config.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/models.dart';
@@ -62,8 +61,8 @@ class StartPage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 32),
                     child: StreamBuilder<int>(
-                      stream: _sliderValue.stream
-                          .startWith(availablePlayers.length),
+                      initialData: availablePlayers.length,
+                      stream: _sliderValue.stream,
                       builder: (context, snapshot) {
                         return Text(
                           '${snapshot.data}',
@@ -95,8 +94,8 @@ class StartPage extends StatelessWidget {
                         inactiveTickMarkColor: Colors.red[100],
                       ),
                       child: StreamBuilder<int>(
-                        stream: _sliderValue.stream
-                            .startWith(availablePlayers.length),
+                        initialData: availablePlayers.length,
+                        stream: _sliderValue.stream,
                         builder: (context, snapshot) {
                           var minPlayers = MIN_PLAYERS.toDouble();
                           var number = snapshot.data == null
@@ -115,8 +114,8 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
                   StreamBuilder<int>(
-                    stream:
-                        _sliderValue.stream.startWith(availablePlayers.length),
+                    initialData: availablePlayers.length,
+                    stream: _sliderValue.stream,
                     builder: (context, snapshot) {
                       return RaisedButton(
                         onPressed: () =>

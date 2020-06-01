@@ -22,15 +22,16 @@ class GamePage extends StatelessWidget {
           child: Row(
             children: [
               StreamBuilder<bool>(
+                initialData: false,
                 stream: Providers.turnHistoryBloc.data
-                    .map((event) => event != null && event[0] != 0)
+                    .map((event) => event[0] != 0)
                     .distinct(),
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
                       Icons.arrow_back_ios,
                     ),
-                    onPressed: snapshot.data != null && snapshot.data
+                    onPressed: snapshot.data
                         ? () => Providers.turnHistoryBloc
                             .perform(TurnHistoryAction.PREV_TURN)
                         : null,
@@ -39,6 +40,7 @@ class GamePage extends StatelessWidget {
               ),
               Expanded(
                 child: StreamBuilder<int>(
+                  initialData: 0,
                   stream:
                       Providers.turnHistoryBloc.data.map((event) => event[0]),
                   builder: (context, snapshot) {
@@ -57,16 +59,18 @@ class GamePage extends StatelessWidget {
                 ),
               ),
               StreamBuilder<bool>(
+                initialData: false,
                 stream: Providers.turnHistoryBloc.data
-                    .map((event) => event != null && event[0] != event[1])
+                    .map((event) => event[0] != event[1])
                     .distinct(),
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
                       Icons.arrow_forward_ios,
                     ),
-                    onPressed: snapshot.data != null && snapshot.data
-                        ? () => Providers.turnHistoryBloc
+                    onPressed: snapshot.data
+                        ? () =>
+                        Providers.turnHistoryBloc
                             .perform(TurnHistoryAction.NEXT_TURN)
                         : null,
                   );
@@ -76,15 +80,17 @@ class GamePage extends StatelessWidget {
           ),
         ),
         StreamBuilder<bool>(
+          initialData: true,
           stream: Providers.turnHistoryBloc.data
-              .map((event) => event != null && event[0] == event[1])
+              .map((event) => event[0] == event[1])
               .distinct(),
           builder: (context, snapshot) {
-            var isCurrent = snapshot.data != null && snapshot.data;
+            var isCurrent = snapshot.data;
             return RaisedButton(
               onPressed: isCurrent
                   ? () => Providers.turnBloc.perform(TurnAction.NEXT_TURN)
-                  : () => Providers.turnHistoryBloc
+                  : () =>
+                  Providers.turnHistoryBloc
                       .perform(TurnHistoryAction.CURRENT_TURN),
               child: isCurrent ? Text('Next Turn') : Text('Go to current'),
             );

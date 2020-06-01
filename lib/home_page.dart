@@ -27,6 +27,7 @@ class HomePage extends StatelessWidget {
           color: Colors.white.withAlpha(192),
         ),
         StreamBuilder<bool>(
+          initialData: false,
           stream:
               Providers.turnBloc.data.map((event) => event != null).distinct(),
           builder: (context, snapshot) {

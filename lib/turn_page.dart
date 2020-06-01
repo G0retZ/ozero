@@ -22,6 +22,7 @@ Widget getTurnPage(int turn) {
         child: Column(
           children: [
             StreamBuilder<String>(
+              initialData: '¯\\_(ツ)_/¯',
               stream: Providers.playersBloc.data
                   .map((event) => event[turn % event.length].name),
               builder: (context, snapshot) {
@@ -36,6 +37,7 @@ Widget getTurnPage(int turn) {
               },
             ),
             StreamBuilder<String>(
+              initialData: 'images/Splash.jpeg',
               stream: Providers.playersBloc.data
                   .map((event) => event[turn % event.length].image),
               builder: (context, snapshot) {
