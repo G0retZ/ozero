@@ -14,7 +14,7 @@ void main() {
 
     test('create JSON from instance', () {
       // Given and When:
-      final player = Player('a', 'b', 5, 2);
+      final player = Player(name: 'a', image: 'b', money: 5, reputation: 2);
 
       // Then:
       expect(player.toJson(), _playerJson());
