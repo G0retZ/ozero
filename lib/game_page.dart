@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ozero/di/di.dart';
+import 'package:ozero/flip.dart';
+import 'package:ozero/turn_page.dart';
 
 import 'bloc/turn.dart';
 
@@ -33,21 +35,25 @@ class GamePage extends StatelessWidget {
                 },
               ),
               Expanded(
-                child: Center(
-                  child: StreamBuilder<int>(
-                    stream:
-                        Providers.turnHistoryBloc.data.map((event) => event[0]),
-                    builder: (context, snapshot) {
-                      return Text(
-                        'This turn is ${snapshot.data}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(0xFF, 0, 0, 0),
-                          fontSize: 35,
-                        ),
-                      );
-                    },
-                  ),
+                child: StreamBuilder<int>(
+                  stream:
+                      Providers.turnHistoryBloc.data.map((event) => event[0]),
+                  builder: (context, snapshot) {
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: 500),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return FlipTransition(
+                          child: child,
+                          turns: animation,
+                        );
+                      },
+                      child: TurnPage(
+                        turn: snapshot.data,
+                        key: ValueKey<int>(snapshot.data),
+                      ),
+                    );
+                  },
                 ),
               ),
               StreamBuilder<bool>(
