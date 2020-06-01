@@ -12,7 +12,10 @@ class GamePage extends StatelessWidget {
     return Column(
       children: [
         RaisedButton(
-          onPressed: () => Providers.turnBloc.perform(TurnAction.END_GAME),
+          onPressed: () {
+            Providers.turnBloc.perform(TurnAction.END_GAME);
+            Providers.playersBloc.perform(null);
+          },
           child: Text('Finish game'),
         ),
         Expanded(
