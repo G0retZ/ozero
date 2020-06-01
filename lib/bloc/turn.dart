@@ -55,7 +55,7 @@ class TurnBloc extends Bloc<TurnAction, int> {
   }
 }
 
-enum TurnHistoryAction { PREV_TURN, NEXT_TURN }
+enum TurnHistoryAction { PREV_TURN, NEXT_TURN, CURRENT_TURN }
 
 // Controls the players turns history.
 // Input - current turn history action
@@ -92,6 +92,9 @@ class TurnHistoryBloc extends Bloc<TurnHistoryAction, List<int>> {
             ArgumentError.checkNotNull(_selectedTurn, "_selectedTurn") + 1,
             0,
             ArgumentError.checkNotNull(_currentTurn, "_currentTurn"));
+        break;
+      case TurnHistoryAction.CURRENT_TURN:
+        turn = ArgumentError.checkNotNull(_currentTurn, "_currentTurn");
         break;
     }
     iSink.add([_selectedTurn = turn, _currentTurn]);

@@ -357,6 +357,24 @@ void main() {
       verifyNoMoreInteractions(turnBloc);
     });
 
+    test('Error current without current turn', () async {
+      // Given
+      final turnBloc = MockTurnBloc();
+      when(turnBloc.data).thenAnswer((_) => Stream.value(null));
+      final TurnHistoryBloc turnHistoryBloc = TurnHistoryBloc(turnBloc);
+
+      // When
+      await Future.value();
+
+      // Then
+      expect(
+          turnHistoryBloc.perform(TurnHistoryAction.CURRENT_TURN),
+          throwsA(
+              (e) => e is ArgumentError && e.message == 'Must not be null'));
+      verify(turnBloc.data);
+      verifyNoMoreInteractions(turnBloc);
+    });
+
     test('Error next with current turn', () async {
       // Given
       final turnBloc = MockTurnBloc();
@@ -389,7 +407,8 @@ void main() {
       verifyNoMoreInteractions(turnBloc);
     });
 
-    test('Answer success to prev and next with current turn', () async {
+    test(
+        'Answer success to prev, next and current with current turn', () async {
       // Given
       final turnBloc = MockTurnBloc();
       when(turnBloc.data).thenAnswer((_) => Stream.value(6));
@@ -400,17 +419,17 @@ void main() {
       // When
       await Future.value();
       final action1 =
-          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
       final action2 =
-          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
       final action3 =
-          await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
       final action4 =
-          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
       final action5 =
-          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.PREV_TURN);
       final action6 =
-          await turnHistoryBloc.perform(TurnHistoryAction.NEXT_TURN);
+      await turnHistoryBloc.perform(TurnHistoryAction.CURRENT_TURN);
       turnHistoryBloc.dispose();
 
       // Then
@@ -422,9 +441,9 @@ void main() {
             [6, 6],
             [5, 6],
             [4, 6],
-            [3, 6],
-            [4, 6],
             [5, 6],
+            [4, 6],
+            [3, 6],
             [6, 6],
             emitsDone
           ]));
