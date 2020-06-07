@@ -61,7 +61,7 @@ class Earning extends JsonEmptyChecker implements Composable<Earning> {
         super.fromJson(json);
 
   Map<String, dynamic> toJson() => {
-        'senderTurn': playerTurn,
+        'playerTurn': playerTurn,
         'money': money,
         'reputation': reputation,
       };
