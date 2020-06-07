@@ -39,10 +39,9 @@ class GamePage extends StatelessWidget {
                 },
               ),
               Expanded(
-                child: StreamBuilder<int>(
-                  initialData: 0,
-                  stream:
-                      Providers.turnHistoryBloc.data.map((event) => event[0]),
+                child: StreamBuilder<List<int>>(
+                  initialData: [0, 0],
+                  stream: Providers.turnHistoryBloc.data,
                   builder: (context, snapshot) {
                     return AnimatedSwitcher(
                       duration: Duration(milliseconds: 500),
@@ -53,7 +52,10 @@ class GamePage extends StatelessWidget {
                           turns: animation,
                         );
                       },
-                      child: getTurnPage(snapshot.data),
+                      child: TurnPage(
+                        key: ValueKey<int>(snapshot.data[0]),
+                        turns: snapshot.data,
+                      ),
                     );
                   },
                 ),
@@ -69,8 +71,7 @@ class GamePage extends StatelessWidget {
                       Icons.arrow_forward_ios,
                     ),
                     onPressed: snapshot.data
-                        ? () =>
-                        Providers.turnHistoryBloc
+                        ? () => Providers.turnHistoryBloc
                             .perform(TurnHistoryAction.NEXT_TURN)
                         : null,
                   );
@@ -89,8 +90,7 @@ class GamePage extends StatelessWidget {
             return RaisedButton(
               onPressed: isCurrent
                   ? () => Providers.turnBloc.perform(TurnAction.NEXT_TURN)
-                  : () =>
-                  Providers.turnHistoryBloc
+                  : () => Providers.turnHistoryBloc
                       .perform(TurnHistoryAction.CURRENT_TURN),
               child: isCurrent ? Text('Next Turn') : Text('Go to current'),
             );
