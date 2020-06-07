@@ -35,7 +35,6 @@ class TransactionsBloc<D> extends Bloc<TransactionsAction<D>, List<D>> {
   Future<bool> perform(TransactionsAction<D> action) async {
     var result = false;
     if (action == null) {
-      ArgumentError.checkNotNull(_transactions, '_transactions');
       result = await _tryToSave(null);
     } else if (action.index == null && action.transaction == null) {
       throw StateError('Illegal action (null, null)');

@@ -4,11 +4,10 @@ import 'package:async/async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:ozero/bloc/transactions.dart';
-import 'package:ozero/models.dart';
 import 'package:ozero/storage/common.dart';
 
 class MockTransactionsStorage extends Mock
-    implements DataStorage<List<Earning>> {}
+    implements DataStorage<List<String>> {}
 
 void main() {
   /// Test Transactions bloc
@@ -20,7 +19,7 @@ void main() {
           .thenAnswer((_) => Future.value(null));
 
       // When
-      TransactionsBloc<Earning>(transactionsStorage);
+      TransactionsBloc<String>(transactionsStorage);
 
       // Then
       verify(transactionsStorage.loadData());
@@ -32,7 +31,7 @@ void main() {
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
           .thenAnswer((_) => Future.value(null));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
           TransactionsBloc(transactionsStorage);
 
       // When
@@ -47,34 +46,14 @@ void main() {
       verifyNoMoreInteractions(transactionsStorage);
     });
 
-    test('Error clear without saved transactions', () async {
-      // Given
-      final transactionsStorage = MockTransactionsStorage();
-      when(transactionsStorage.loadData())
-          .thenAnswer((_) => Future.value(null));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
-
-      // When
-      await Future.value();
-
-      // Then
-      expect(
-          transactionsBloc.perform(null),
-          throwsA(
-              (e) => e is ArgumentError && e.message == 'Must not be null'));
-      verify(transactionsStorage.loadData());
-      verifyNoMoreInteractions(transactionsStorage);
-    });
-
     test('Answer failed to clear with saved transactions', () async {
       // Given
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
@@ -102,14 +81,40 @@ void main() {
       expect(action4, false);
     });
 
+    test('Answer success to clear without saved transactions', () async {
+      // Given
+      final transactionsStorage = MockTransactionsStorage();
+      when(transactionsStorage.loadData())
+          .thenAnswer((_) => Future.value(null));
+      when(transactionsStorage.saveData(argThat(anything)))
+          .thenAnswer((_) => Future.value(true));
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
+      final queue = StreamQueue(transactionsBloc.data);
+      queue.lookAhead(1); //subscribe to broadcast
+
+      // When
+      final action = await transactionsBloc.perform(null);
+      transactionsBloc.dispose();
+
+      // Then
+      verifyInOrder([
+        transactionsStorage.loadData(),
+        transactionsStorage.saveData(null),
+      ]);
+      verifyNoMoreInteractions(transactionsStorage);
+      expect(queue, emitsInOrder([null, null, emitsDone]));
+      expect(action, true);
+    });
+
     test('Answer success to clear with saved transactions', () async {
       // Given
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
@@ -136,30 +141,26 @@ void main() {
           .thenAnswer((_) => Future.value(null));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
-      await transactionsBloc.perform(TransactionsAction(transaction: earning1));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning2));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning3));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning4));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val1'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val2'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val3'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val4'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning2]),
-        transactionsStorage.saveData([earning3]),
-        transactionsStorage.saveData([earning4]),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val2']),
+        transactionsStorage.saveData(['val3']),
+        transactionsStorage.saveData(['val4']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(queue, emitsInOrder([null, emitsDone]));
@@ -171,30 +172,26 @@ void main() {
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
-      await transactionsBloc.perform(TransactionsAction(transaction: earning1));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning2));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning3));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning4));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val1'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val2'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val3'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val4'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning2]),
-        transactionsStorage.saveData([earning3]),
-        transactionsStorage.saveData([earning4]),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val2']),
+        transactionsStorage.saveData(['val3']),
+        transactionsStorage.saveData(['val4']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(queue, emitsInOrder([[], emitsDone]));
@@ -207,40 +204,36 @@ void main() {
           .thenAnswer((_) => Future.value(null));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
-      await transactionsBloc.perform(TransactionsAction(transaction: earning1));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning2));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning3));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning4));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val1'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val2'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val3'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val4'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning1, earning2]),
-        transactionsStorage.saveData([earning1, earning2, earning3]),
-        transactionsStorage.saveData([earning1, earning2, earning3, earning4]),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val1', 'val2']),
+        transactionsStorage.saveData(['val1', 'val2', 'val3']),
+        transactionsStorage.saveData(['val1', 'val2', 'val3', 'val4']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(
           queue,
           emitsInOrder([
             null,
-            [earning1],
-            [earning1, earning2],
-            [earning1, earning2, earning3],
-            [earning1, earning2, earning3, earning4],
+            ['val1'],
+            ['val1', 'val2'],
+            ['val1', 'val2', 'val3'],
+            ['val1', 'val2', 'val3', 'val4'],
             emitsDone
           ]));
     });
@@ -251,40 +244,36 @@ void main() {
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
 
       // When
       await Future.value();
-      await transactionsBloc.perform(TransactionsAction(transaction: earning1));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning2));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning3));
-      await transactionsBloc.perform(TransactionsAction(transaction: earning4));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val1'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val2'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val3'));
+      await transactionsBloc.perform(TransactionsAction(transaction: 'val4'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning1, earning2]),
-        transactionsStorage.saveData([earning1, earning2, earning3]),
-        transactionsStorage.saveData([earning1, earning2, earning3, earning4]),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val1', 'val2']),
+        transactionsStorage.saveData(['val1', 'val2', 'val3']),
+        transactionsStorage.saveData(['val1', 'val2', 'val3', 'val4']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(
           queue,
           emitsInOrder([
             [],
-            [earning1],
-            [earning1, earning2],
-            [earning1, earning2, earning3],
-            [earning1, earning2, earning3, earning4],
+            ['val1'],
+            ['val1', 'val2'],
+            ['val1', 'val2', 'val3'],
+            ['val1', 'val2', 'val3', 'val4'],
             emitsDone
           ]));
     });
@@ -295,8 +284,8 @@ void main() {
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
           .thenAnswer((_) => Future.value(null));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
 
       // When
       await Future.value();
@@ -322,8 +311,8 @@ void main() {
       // Given
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
 
       // When
       await Future.value();
@@ -341,13 +330,12 @@ void main() {
 
     test('Answer failed to remove transaction by index', () async {
       // Given
-      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
-          .thenAnswer((_) => Future.value([earning]));
+          .thenAnswer((_) => Future.value(['val']));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
@@ -372,29 +360,25 @@ void main() {
       expect(
           queue,
           emitsInOrder([
-            [earning],
+            ['val'],
             emitsDone
           ]));
     });
 
     test('Remove transactions by index', () async {
       // Given
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) =>
           Future.value([
-            earning1,
-            earning2,
-            earning3,
-            earning4,
+            'val1',
+            'val2',
+            'val3',
+            'val4',
           ]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
@@ -407,59 +391,59 @@ void main() {
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1, earning2, earning3]),
-        transactionsStorage.saveData([earning1, earning3]),
+        transactionsStorage.saveData(['val1', 'val2', 'val3']),
+        transactionsStorage.saveData(['val1', 'val3']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(
           queue,
           emitsInOrder([
-            [earning1, earning2, earning3, earning4],
-            [earning1, earning2, earning3],
-            [earning1, earning3],
+            ['val1', 'val2', 'val3', 'val4'],
+            ['val1', 'val2', 'val3'],
+            ['val1', 'val3'],
             emitsDone
           ]));
     });
 
     test('Error failed to replace by index without saved transactions',
         () async {
-      // Given
-          final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
+          // Given
           final transactionsStorage = MockTransactionsStorage();
           when(transactionsStorage.loadData())
               .thenAnswer((_) => Future.value(null));
-          final TransactionsBloc<Earning> transactionsBloc =
+          final TransactionsBloc<String> transactionsBloc =
           TransactionsBloc(transactionsStorage);
 
           // When
           await Future.value();
 
           // Then
+          expect(
+              transactionsBloc
+                  .perform(TransactionsAction(index: -1, transaction: 'val')),
+              throwsA(
+                      (e) =>
+                  e is ArgumentError && e.message == 'Must not be null'));
+          expect(
+              transactionsBloc
+                  .perform(TransactionsAction(index: 0, transaction: 'val')),
+              throwsA(
+                      (e) =>
+                  e is ArgumentError && e.message == 'Must not be null'));
       expect(
           transactionsBloc
-              .perform(TransactionsAction(index: -1, transaction: earning)),
+              .perform(TransactionsAction(index: 1, transaction: 'val')),
           throwsA(
-              (e) => e is ArgumentError && e.message == 'Must not be null'));
-      expect(
-          transactionsBloc
-              .perform(TransactionsAction(index: 0, transaction: earning)),
-          throwsA(
-              (e) => e is ArgumentError && e.message == 'Must not be null'));
-      expect(
-          transactionsBloc
-              .perform(TransactionsAction(index: 1, transaction: earning)),
-          throwsA(
-              (e) => e is ArgumentError && e.message == 'Must not be null'));
+                  (e) => e is ArgumentError && e.message == 'Must not be null'));
       verify(transactionsStorage.loadData());
       verifyNoMoreInteractions(transactionsStorage);
     });
 
     test('Error failed to replace by wrong index', () async {
       // Given
-      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) => Future.value([]));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
 
       // When
@@ -468,15 +452,15 @@ void main() {
       // Then
       expect(
           transactionsBloc
-              .perform(TransactionsAction(index: -1, transaction: earning)),
+              .perform(TransactionsAction(index: -1, transaction: 'val')),
           throwsA((e) => e is RangeError && e.message == 'Index out of range'));
       expect(
           transactionsBloc
-              .perform(TransactionsAction(index: 0, transaction: earning)),
+              .perform(TransactionsAction(index: 0, transaction: 'val')),
           throwsA((e) => e is RangeError && e.message == 'Index out of range'));
       expect(
           transactionsBloc
-              .perform(TransactionsAction(index: 1, transaction: earning)),
+              .perform(TransactionsAction(index: 1, transaction: 'val')),
           throwsA((e) => e is RangeError && e.message == 'Index out of range'));
       verify(transactionsStorage.loadData());
       verifyNoMoreInteractions(transactionsStorage);
@@ -484,14 +468,12 @@ void main() {
 
     test('Answer failed to replace by index with saved transactions', () async {
       // Given
-      final earning = Earning(playerTurn: 0, money: 0, reputation: 0);
-      final earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData())
-          .thenAnswer((_) => Future.value([earning]));
+          .thenAnswer((_) => Future.value(['val']));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(false));
-      final TransactionsBloc<Earning> transactionsBloc =
+      final TransactionsBloc<String> transactionsBloc =
       TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
@@ -499,75 +481,70 @@ void main() {
       // When
       await Future.value();
       await transactionsBloc
-          .perform(TransactionsAction(index: 0, transaction: earning1));
+          .perform(TransactionsAction(index: 0, transaction: 'val1'));
       await transactionsBloc
-          .perform(TransactionsAction(index: 0, transaction: earning1));
+          .perform(TransactionsAction(index: 0, transaction: 'val1'));
       await transactionsBloc
-          .perform(TransactionsAction(index: 0, transaction: earning1));
+          .perform(TransactionsAction(index: 0, transaction: 'val1'));
       await transactionsBloc
-          .perform(TransactionsAction(index: 0, transaction: earning1));
+          .perform(TransactionsAction(index: 0, transaction: 'val1'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning1]),
-        transactionsStorage.saveData([earning1]),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val1']),
+        transactionsStorage.saveData(['val1']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(
           queue,
           emitsInOrder([
-            [earning],
+            ['val'],
             emitsDone
           ]));
     });
 
     test('Replace transactions by index', () async {
       // Given
-      var earning1 = Earning(playerTurn: 0, money: 0, reputation: 0);
-      var earning2 = Earning(playerTurn: 0, money: 1, reputation: 2);
-      var earning3 = Earning(playerTurn: 0, money: 2, reputation: 3);
-      var earning4 = Earning(playerTurn: 0, money: 3, reputation: 4);
-      var earning5 = Earning(playerTurn: 0, money: 4, reputation: 5);
       final transactionsStorage = MockTransactionsStorage();
       when(transactionsStorage.loadData()).thenAnswer((_) =>
           Future.value([
-            earning1,
-            earning2,
-            earning3,
-            earning4,
+            'val1',
+            'val2',
+            'val3',
+            'val4',
           ]));
       when(transactionsStorage.saveData(argThat(anything)))
           .thenAnswer((_) => Future.value(true));
-      final TransactionsBloc<Earning> transactionsBloc =
-          TransactionsBloc(transactionsStorage);
+      final TransactionsBloc<String> transactionsBloc =
+      TransactionsBloc(transactionsStorage);
       final queue = StreamQueue(transactionsBloc.data);
       queue.lookAhead(1); //subscribe to broadcast
 
       // When
       await Future.value();
       await transactionsBloc
-          .perform(TransactionsAction(index: 1, transaction: earning5));
+          .perform(TransactionsAction(index: 1, transaction: 'val5'));
       await transactionsBloc
-          .perform(TransactionsAction(index: 3, transaction: earning5));
+          .perform(TransactionsAction(index: 3, transaction: 'val5'));
       transactionsBloc.dispose();
 
       // Then
       verifyInOrder([
         transactionsStorage.loadData(),
-        transactionsStorage.saveData([earning1, earning5, earning3, earning4]),
-        transactionsStorage.saveData([earning1, earning5, earning3, earning5]),
+        transactionsStorage.saveData(['val1', 'val5', 'val3', 'val4']),
+        transactionsStorage.saveData(['val1', 'val5', 'val3', 'val5']),
       ]);
       verifyNoMoreInteractions(transactionsStorage);
       expect(
           queue,
           emitsInOrder([
-            [earning1, earning2, earning3, earning4],
-            [earning1, earning5, earning3, earning4],
-            [earning1, earning5, earning3, earning5],
+            ['val1', 'val2', 'val3', 'val4'],
+            ['val1', 'val5', 'val3', 'val4'],
+            ['val1', 'val5', 'val3', 'val5'],
             emitsDone
           ]));
     });
