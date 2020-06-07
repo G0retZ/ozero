@@ -24,13 +24,42 @@ class Earnings extends StatelessWidget {
                   .distinct(),
               builder: (context, snapshot) {
                 final sign = snapshot.data > 0 ? '+' : '';
-                return Text(
-                  '💲 $sign${snapshot.data}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green[800],
-                    fontSize: 18,
-                  ),
+                return Row(
+                  children: [
+                    IconButton(
+                      color: Colors.green[800],
+                      disabledColor: Colors.green[100],
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                      ),
+                      onPressed: snapshot.data <= -1000
+                          ? null
+                          : () => Providers.earningInputBloc
+                              .perform(Earning(money: snapshot.data - 10)),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '💲 $sign${snapshot.data}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[800],
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.green[800],
+                      disabledColor: Colors.green[100],
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                      ),
+                      onPressed: snapshot.data >= 1000
+                          ? null
+                          : () => Providers.earningInputBloc
+                              .perform(Earning(money: snapshot.data + 10)),
+                    ),
+                  ],
                 );
               },
             ),
@@ -41,10 +70,10 @@ class Earnings extends StatelessWidget {
               inactiveTrackColor: Colors.green[100],
               trackShape: RoundedRectSliderTrackShape(),
               trackHeight: 4.0,
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8.0),
               thumbColor: Colors.greenAccent[700],
               overlayColor: Colors.green.withAlpha(32),
-              overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+              overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
               tickMarkShape: RoundSliderTickMarkShape(),
               activeTickMarkColor: Colors.green[700],
               inactiveTickMarkColor: Colors.green[100],
@@ -77,30 +106,61 @@ class Earnings extends StatelessWidget {
                   .distinct(),
               builder: (context, snapshot) {
                 final sign = snapshot.data > 0 ? '+' : '';
-                return Text(
-                  '⭐️ $sign${snapshot.data}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.yellow[800],
-                    fontSize: 18,
-                  ),
+                return Row(
+                  children: [
+                    IconButton(
+                      color: Colors.yellow[800],
+                      disabledColor: Colors.yellow[300],
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                      ),
+                      onPressed: snapshot.data <= -100
+                          ? null
+                          : () =>
+                          Providers.earningInputBloc
+                              .perform(Earning(reputation: snapshot.data - 10)),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '⭐️ $sign${snapshot.data}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.yellow[800],
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.yellow[800],
+                      disabledColor: Colors.yellow[300],
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                      ),
+                      onPressed: snapshot.data >= 100
+                          ? null
+                          : () =>
+                          Providers.earningInputBloc
+                              .perform(Earning(reputation: snapshot.data + 10)),
+                    ),
+                  ],
                 );
               },
             ),
           ),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
-              activeTrackColor: Colors.yellow[700],
-              inactiveTrackColor: Colors.yellow[100],
+              activeTrackColor: Colors.yellow[800],
+              inactiveTrackColor: Colors.yellow[300],
               trackShape: RoundedRectSliderTrackShape(),
               trackHeight: 4.0,
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8.0),
               thumbColor: Colors.yellowAccent[700],
               overlayColor: Colors.yellow.withAlpha(32),
-              overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+              overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
               tickMarkShape: RoundSliderTickMarkShape(),
-              activeTickMarkColor: Colors.yellow[700],
-              inactiveTickMarkColor: Colors.yellow[100],
+              activeTickMarkColor: Colors.yellow[800],
+              inactiveTickMarkColor: Colors.yellow[300],
             ),
             child: StreamBuilder<int>(
               initialData: 0,
@@ -125,7 +185,7 @@ class Earnings extends StatelessWidget {
       );
     } else {
       return Padding(
-        padding: EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: 32),
         child: Row(
           children: [
             Expanded(
