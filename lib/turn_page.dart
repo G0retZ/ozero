@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ozero/earnings.dart';
 
 import 'di/di.dart';
 
@@ -53,6 +54,7 @@ class TurnPage extends StatelessWidget {
                   );
                 },
               ),
+              Earnings(turn: turns),
             ],
           ),
         ),

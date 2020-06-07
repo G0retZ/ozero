@@ -14,6 +14,7 @@ class GamePage extends StatelessWidget {
         RaisedButton(
           onPressed: () {
             Providers.turnBloc.perform(TurnAction.END_GAME);
+            Providers.earningsBloc.perform(null);
             Providers.playersBloc.perform(null);
           },
           child: Text('Finish game'),
@@ -89,7 +90,12 @@ class GamePage extends StatelessWidget {
             var isCurrent = snapshot.data;
             return RaisedButton(
               onPressed: isCurrent
-                  ? () => Providers.turnBloc.perform(TurnAction.NEXT_TURN)
+                  ? () =>
+                      Providers.earningInputBloc.perform(null).then((value) {
+                        if (value) {
+                          Providers.turnBloc.perform(TurnAction.NEXT_TURN);
+                        }
+                      })
                   : () => Providers.turnHistoryBloc
                       .perform(TurnHistoryAction.CURRENT_TURN),
               child: isCurrent ? Text('Next Turn') : Text('Go to current'),
