@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
           child: Image(
             width: max(width, height),
             height: max(width, height),
-            image: AssetImage("images/Splash.jpeg"),
+            image: AssetImage('images/Splash.jpeg'),
           ),
         ),
         Container(
@@ -27,6 +27,7 @@ class HomePage extends StatelessWidget {
           color: Colors.white.withAlpha(192),
         ),
         StreamBuilder<bool>(
+          initialData: false,
           stream:
               Providers.turnBloc.data.map((event) => event != null).distinct(),
           builder: (context, snapshot) {

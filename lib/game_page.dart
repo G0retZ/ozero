@@ -14,6 +14,7 @@ class GamePage extends StatelessWidget {
         RaisedButton(
           onPressed: () {
             Providers.turnBloc.perform(TurnAction.END_GAME);
+            Providers.earningsBloc.perform(null);
             Providers.playersBloc.perform(null);
           },
           child: Text('Finish game'),
@@ -22,15 +23,16 @@ class GamePage extends StatelessWidget {
           child: Row(
             children: [
               StreamBuilder<bool>(
+                initialData: false,
                 stream: Providers.turnHistoryBloc.data
-                    .map((event) => event != null && event[0] != 0)
+                    .map((event) => event[0] != 0)
                     .distinct(),
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
                       Icons.arrow_back_ios,
                     ),
-                    onPressed: snapshot.data != null && snapshot.data
+                    onPressed: snapshot.data
                         ? () => Providers.turnHistoryBloc
                             .perform(TurnHistoryAction.PREV_TURN)
                         : null,
@@ -38,9 +40,9 @@ class GamePage extends StatelessWidget {
                 },
               ),
               Expanded(
-                child: StreamBuilder<int>(
-                  stream:
-                      Providers.turnHistoryBloc.data.map((event) => event[0]),
+                child: StreamBuilder<List<int>>(
+                  initialData: [0, 0],
+                  stream: Providers.turnHistoryBloc.data,
                   builder: (context, snapshot) {
                     return AnimatedSwitcher(
                       duration: Duration(milliseconds: 500),
@@ -51,21 +53,25 @@ class GamePage extends StatelessWidget {
                           turns: animation,
                         );
                       },
-                      child: getTurnPage(snapshot.data),
+                      child: TurnPage(
+                        key: ValueKey<int>(snapshot.data[0]),
+                        turns: snapshot.data,
+                      ),
                     );
                   },
                 ),
               ),
               StreamBuilder<bool>(
+                initialData: false,
                 stream: Providers.turnHistoryBloc.data
-                    .map((event) => event != null && event[0] != event[1])
+                    .map((event) => event[0] != event[1])
                     .distinct(),
                 builder: (context, snapshot) {
                   return IconButton(
                     icon: Icon(
                       Icons.arrow_forward_ios,
                     ),
-                    onPressed: snapshot.data != null && snapshot.data
+                    onPressed: snapshot.data
                         ? () => Providers.turnHistoryBloc
                             .perform(TurnHistoryAction.NEXT_TURN)
                         : null,
@@ -75,9 +81,26 @@ class GamePage extends StatelessWidget {
             ],
           ),
         ),
-        RaisedButton(
-          onPressed: () => Providers.turnBloc.perform(TurnAction.NEXT_TURN),
-          child: Text('Next Turn'),
+        StreamBuilder<bool>(
+          initialData: true,
+          stream: Providers.turnHistoryBloc.data
+              .map((event) => event[0] == event[1])
+              .distinct(),
+          builder: (context, snapshot) {
+            var isCurrent = snapshot.data;
+            return RaisedButton(
+              onPressed: isCurrent
+                  ? () =>
+                      Providers.earningInputBloc.perform(null).then((value) {
+                        if (value) {
+                          Providers.turnBloc.perform(TurnAction.NEXT_TURN);
+                        }
+                      })
+                  : () => Providers.turnHistoryBloc
+                      .perform(TurnHistoryAction.CURRENT_TURN),
+              child: isCurrent ? Text('Next Turn') : Text('Go to current'),
+            );
+          },
         ),
       ],
     );

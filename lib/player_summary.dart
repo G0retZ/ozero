@@ -13,45 +13,52 @@ Widget getPlayerSummary(Player player) {
           height: 64,
           image: AssetImage(player.image),
         ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              '${player.name}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF000000),
-                fontSize: 16,
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 8),
+                  child: Text(
+                    '${player.name}',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            Row(
-              children: <Widget>[
-                Icon(
-                  Icons.monetization_on,
-                  color: Color(0xFF008000),
-                ),
-                Text(
-                  '${player.money}',
-                  style: TextStyle(
-                    color: Color(0xFF000000),
-                    fontSize: 16,
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: Text(
+                      '💲 ${player.money}',
+                      style: TextStyle(
+                        color: Colors.green[800],
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.star_half,
-                  color: Color(0xFFFFD700),
-                ),
-                Text(
-                  '${player.reputation}',
-                  style: TextStyle(
-                    color: Color(0xFF000000),
-                    fontSize: 16,
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: Text(
+                      '⭐ ${player.reputation}',
+                      style: TextStyle(
+                        color: Colors.yellow[800],
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
-        )
+                ],
+              )
+            ],
+          ),
+        ),
       ],
     ),
   );

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ozero/bloc/common.dart';
 import 'package:ozero/config.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/models.dart';
@@ -29,7 +28,7 @@ class StartPage extends StatelessWidget {
                 children: [
                   RaisedButton(
                     onPressed: () => Providers.playersBloc.perform(null),
-                    child: Text("Cancel"),
+                    child: Text('Cancel'),
                   ),
                   Expanded(
                     child: ListView.builder(
@@ -43,7 +42,7 @@ class StartPage extends StatelessWidget {
                   RaisedButton(
                     onPressed: () =>
                         Providers.turnBloc.perform(TurnAction.START_GAME),
-                    child: Text("Start game"),
+                    child: Text('Start game'),
                   ),
                 ],
               );
@@ -55,21 +54,21 @@ class StartPage extends StatelessWidget {
                     'Number of players',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
+                      color: Colors.black,
                       fontSize: 20,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 32),
                     child: StreamBuilder<int>(
-                      stream: _sliderValue.stream
-                          .startWith(availablePlayers.length),
+                      initialData: availablePlayers.length,
+                      stream: _sliderValue.stream,
                       builder: (context, snapshot) {
                         return Text(
                           '${snapshot.data}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF000000),
+                            color: Colors.black,
                             fontSize: 48,
                           ),
                         );
@@ -95,8 +94,8 @@ class StartPage extends StatelessWidget {
                         inactiveTickMarkColor: Colors.red[100],
                       ),
                       child: StreamBuilder<int>(
-                        stream: _sliderValue.stream
-                            .startWith(availablePlayers.length),
+                        initialData: availablePlayers.length,
+                        stream: _sliderValue.stream,
                         builder: (context, snapshot) {
                           var minPlayers = MIN_PLAYERS.toDouble();
                           var number = snapshot.data == null
@@ -115,13 +114,13 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
                   StreamBuilder<int>(
-                    stream:
-                        _sliderValue.stream.startWith(availablePlayers.length),
+                    initialData: availablePlayers.length,
+                    stream: _sliderValue.stream,
                     builder: (context, snapshot) {
                       return RaisedButton(
                         onPressed: () =>
                             Providers.playersBloc.perform(snapshot.data),
-                        child: Text("Create game"),
+                        child: Text('Create game'),
                       );
                     },
                   ),

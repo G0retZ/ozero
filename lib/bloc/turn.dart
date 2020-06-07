@@ -35,11 +35,11 @@ class TurnBloc extends Bloc<TurnAction, int> {
         break;
       case TurnAction.NEXT_TURN:
         final turn =
-            ArgumentError.checkNotNull(_currentTurn, "_currentTurn") + 1;
+            ArgumentError.checkNotNull(_currentTurn, '_currentTurn') + 1;
         result = await _tryToSave(turn);
         break;
       case TurnAction.END_GAME:
-        ArgumentError.checkNotNull(_currentTurn, "_currentTurn");
+        ArgumentError.checkNotNull(_currentTurn, '_currentTurn');
         result = await _tryToSave(null);
         break;
     }
@@ -55,7 +55,7 @@ class TurnBloc extends Bloc<TurnAction, int> {
   }
 }
 
-enum TurnHistoryAction { PREV_TURN, NEXT_TURN }
+enum TurnHistoryAction { PREV_TURN, NEXT_TURN, CURRENT_TURN }
 
 // Controls the players turns history.
 // Input - current turn history action
@@ -83,15 +83,18 @@ class TurnHistoryBloc extends Bloc<TurnHistoryAction, List<int>> {
     switch (action) {
       case TurnHistoryAction.PREV_TURN:
         turn = RangeError.checkValueInInterval(
-            ArgumentError.checkNotNull(_selectedTurn, "_selectedTurn") - 1,
+            ArgumentError.checkNotNull(_selectedTurn, '_selectedTurn') - 1,
             0,
-            ArgumentError.checkNotNull(_currentTurn, "_currentTurn"));
+            ArgumentError.checkNotNull(_currentTurn, '_currentTurn'));
         break;
       case TurnHistoryAction.NEXT_TURN:
         turn = RangeError.checkValueInInterval(
-            ArgumentError.checkNotNull(_selectedTurn, "_selectedTurn") + 1,
+            ArgumentError.checkNotNull(_selectedTurn, '_selectedTurn') + 1,
             0,
-            ArgumentError.checkNotNull(_currentTurn, "_currentTurn"));
+            ArgumentError.checkNotNull(_currentTurn, '_currentTurn'));
+        break;
+      case TurnHistoryAction.CURRENT_TURN:
+        turn = ArgumentError.checkNotNull(_currentTurn, '_currentTurn');
         break;
     }
     iSink.add([_selectedTurn = turn, _currentTurn]);

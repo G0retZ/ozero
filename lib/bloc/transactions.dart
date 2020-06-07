@@ -35,31 +35,31 @@ class TransactionsBloc<D> extends Bloc<TransactionsAction<D>, List<D>> {
   Future<bool> perform(TransactionsAction<D> action) async {
     var result = false;
     if (action == null) {
-      ArgumentError.checkNotNull(_transactions, "_transactions");
-      result = await tryToSave(null);
+      result = await _tryToSave(null);
     } else if (action.index == null && action.transaction == null) {
       throw StateError('Illegal action (null, null)');
     } else if (action.index == null && action.transaction != null) {
-      result = await tryToSave(
+      result = await _tryToSave(
           (_transactions?.toList() ?? [])..add(action.transaction));
     } else if (action.index != null && action.transaction == null) {
       final index = RangeError.checkValidIndex(
         action.index,
-        ArgumentError.checkNotNull(_transactions, "_transactions"),
+        ArgumentError.checkNotNull(_transactions, '_transactions'),
       );
-      result = await tryToSave(_transactions.toList()..removeAt(index));
+      result = await _tryToSave(_transactions.toList()
+        ..removeAt(index));
     } else if (action.index != null && action.transaction != null) {
       final index = RangeError.checkValidIndex(
         action.index,
-        ArgumentError.checkNotNull(_transactions, "_transactions"),
+        ArgumentError.checkNotNull(_transactions, '_transactions'),
       );
-      result = await tryToSave(_transactions.toList()
+      result = await _tryToSave(_transactions.toList()
         ..replaceRange(index, index + 1, [action.transaction]));
     }
     return result;
   }
 
-  Future<bool> tryToSave(List<D> data) async {
+  Future<bool> _tryToSave(List<D> data) async {
     final result = await _transactionsStorage.saveData(data);
     if (result) {
       iSink.add(_transactions = data);
