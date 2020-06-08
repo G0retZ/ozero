@@ -33,4 +33,13 @@ class Providers {
 
   static final earningInputBloc = TransactionInputBloc<Earning>(
       earningsBloc, Earning(money: 0, reputation: 0));
+
+  // short lifetime BLoC
+  static final createPlayersStatBloc = () => PlayersStat(
+        playersBloc,
+        earningsBloc,
+        remittancesBloc,
+        moneyLossBloc,
+        reputationLossBloc,
+      );
 }
