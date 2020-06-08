@@ -61,12 +61,12 @@ enum TurnHistoryAction { PREV_TURN, NEXT_TURN, CURRENT_TURN }
 // Input - current turn history action
 // Output - List with selected turn index (0) and current turn index (1)
 class TurnHistoryBloc extends Bloc<TurnHistoryAction, List<int>> {
-  final Bloc<TurnAction, int> _turnBloc;
+  StreamSubscription<int> _turnSubscription;
   int _selectedTurn;
   int _currentTurn;
 
-  TurnHistoryBloc(this._turnBloc) {
-    _turnBloc.data.listen((event) {
+  TurnHistoryBloc(Bloc<dynamic, int> turnBloc) {
+    _turnSubscription = turnBloc.data.listen((event) {
       _currentTurn = event;
       iSink.add([_selectedTurn = _currentTurn, _currentTurn]);
     });
@@ -99,5 +99,11 @@ class TurnHistoryBloc extends Bloc<TurnHistoryAction, List<int>> {
     }
     iSink.add([_selectedTurn = turn, _currentTurn]);
     return true;
+  }
+
+  @override
+  void dispose() {
+    _turnSubscription.cancel();
+    super.dispose();
   }
 }
