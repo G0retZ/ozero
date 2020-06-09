@@ -9,7 +9,7 @@ import 'package:ozero/storage/common.dart';
 
 class MockTurnStorage extends Mock implements DataStorage<int> {}
 
-class MockTurnBloc extends Mock implements Bloc<TurnAction, int> {}
+class MockTurnBloc extends Mock implements Bloc<dynamic, int> {}
 
 void main() {
   /// Test Turn bloc

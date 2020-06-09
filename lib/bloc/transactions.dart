@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ozero/storage/common.dart';
 
+import '../models.dart';
 import 'common.dart';
 
 /// Transaction action.
@@ -65,5 +66,35 @@ class TransactionsBloc<D> extends Bloc<TransactionsAction<D>, List<D>> {
       iSink.add(_transactions = data);
     }
     return result;
+  }
+}
+
+/// Controls the Transaction input.
+/// Input - Transaction to update the cached data or null to save it
+/// Output - updated Transaction
+class TransactionInputBloc<D extends Composable<D>> extends Bloc<D, D> {
+  final Bloc<TransactionsAction<D>, dynamic> _transactionsBloc;
+  final D _initValue;
+  D _data;
+
+  TransactionInputBloc(this._transactionsBloc, this._initValue)
+      : _data = _initValue;
+
+  @override
+  Future<bool> perform(D action) async {
+    if (action == null) {
+      final tmp = _data;
+      _data = _initValue;
+      return _transactionsBloc.perform(
+        TransactionsAction(
+          transaction: tmp.assertComposed(),
+        ),
+      );
+    } else if (_data == null) {
+      iSink.add(_data = action);
+    } else {
+      iSink.add(_data = _data.mergeWith(action));
+    }
+    return true;
   }
 }

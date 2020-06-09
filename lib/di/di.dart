@@ -1,5 +1,4 @@
 import 'package:ozero/bloc/players.dart';
-import 'package:ozero/bloc/transaction_input.dart';
 import 'package:ozero/bloc/transactions.dart';
 import 'package:ozero/bloc/turn.dart';
 import 'package:ozero/models.dart';
@@ -34,4 +33,13 @@ class Providers {
 
   static final earningInputBloc = TransactionInputBloc<Earning>(
       earningsBloc, Earning(money: 0, reputation: 0));
+
+  // short lifetime BLoC
+  static final createPlayersStatBloc = () => PlayersStat(
+        playersBloc,
+        earningsBloc,
+        remittancesBloc,
+        moneyLossBloc,
+        reputationLossBloc,
+      );
 }

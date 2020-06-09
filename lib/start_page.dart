@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ozero/config.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/models.dart';
-import 'package:ozero/player_summary.dart';
+import 'package:ozero/players_stats.dart';
 
 import 'bloc/turn.dart';
 
@@ -31,13 +31,7 @@ class StartPage extends StatelessWidget {
                     child: Text('Cancel'),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(top: 32, bottom: 32),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int position) {
-                        return getPlayerSummary(snapshot.data[position]);
-                      },
-                    ),
+                    child: PlayersStats(),
                   ),
                   RaisedButton(
                     onPressed: () =>

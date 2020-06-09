@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/flip.dart';
+import 'package:ozero/stats_page.dart';
 import 'package:ozero/turn_page.dart';
 
 import 'bloc/turn.dart';
@@ -11,13 +12,36 @@ class GamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        RaisedButton(
-          onPressed: () {
-            Providers.turnBloc.perform(TurnAction.END_GAME);
-            Providers.earningsBloc.perform(null);
-            Providers.playersBloc.perform(null);
-          },
-          child: Text('Finish game'),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: RaisedButton(
+                  onPressed: () {
+                    Providers.turnBloc.perform(TurnAction.END_GAME);
+                    Providers.earningsBloc.perform(null);
+                    Providers.playersBloc.perform(null);
+                  },
+                  child: Text('Finish game'),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StatsPage()),
+                    );
+                  },
+                  child: Text('Stats'),
+                ),
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: Row(
