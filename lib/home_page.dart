@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:ozero/di/di.dart';
 import 'package:ozero/game_page.dart';
@@ -9,22 +7,20 @@ class HomePage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData = MediaQuery.of(context);
-    final width = queryData.size.width;
-    final height = queryData.size.height;
     return Stack(
       children: <Widget>[
         Center(
           child: Image(
-            width: max(width, height),
-            height: max(width, height),
+            width: double.infinity,
+            height: double.infinity,
             image: AssetImage('images/Splash.jpeg'),
+            fit: BoxFit.cover,
           ),
         ),
         Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.white.withAlpha(192),
+          color: Colors.white.withAlpha(0xE0),
         ),
         StreamBuilder<bool>(
           initialData: false,

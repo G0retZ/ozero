@@ -27,20 +27,13 @@ class TurnPage extends StatelessWidget {
           color: Color(0xFFFFFFFF),
           child: Column(
             children: [
-              StreamBuilder<String>(
-                initialData: '¯\\_(ツ)_/¯',
-                stream: Providers.playersBloc.data
-                    .map((event) => event[turns[0] % event.length].name),
-                builder: (context, snapshot) {
-                  return Text(
-                    '${turns[0] + 1}. ${snapshot.data}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
-                      fontSize: 32,
-                    ),
-                  );
-                },
+              Text(
+                'Ход №${turns[0] + 1}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF000000),
+                  fontSize: 18,
+                ),
               ),
               StreamBuilder<String>(
                 initialData: 'images/Splash.jpeg',
