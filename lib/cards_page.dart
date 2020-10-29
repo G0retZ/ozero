@@ -1,81 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:ozero/bloc/players.dart';
-import 'package:ozero/di/di.dart';
-import 'package:ozero/models.dart';
 
-class PlayersStats extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _PlayersStatsState();
+class Item {
+  final Color color;
+  final IconData image;
+
+  Item(this.color, this.image);
 }
 
-class _PlayersStatsState extends State<PlayersStats> {
+class CardsPage extends StatelessWidget {
+  final List<Item> data = [
+    Item(Color(0xffcb2028), Icons.image),
+    Item(Color(0xffcb2028), Icons.money_off),
+    Item(Color(0xffcb2028), Icons.alarm_on),
+    Item(Color(0xffcb2028), Icons.adb),
+    Item(Color(0xffcb2028), Icons.map),
+    Item(Color(0xffcb2028), Icons.accessible_forward),
+    Item(Color(0xffe96d25), Icons.ac_unit),
+    Item(Color(0xffe96d25), Icons.backup),
+    Item(Color(0xffe96d25), Icons.child_friendly),
+    Item(Color(0xffe96d25), Icons.image),
+    Item(Color(0xffe96d25), Icons.money_off),
+    Item(Color(0xffe96d25), Icons.alarm_on),
+    Item(Color(0xffa2206a), Icons.adb),
+    Item(Color(0xffa2206a), Icons.map),
+    Item(Color(0xffa2206a), Icons.accessible_forward),
+    Item(Color(0xffa2206a), Icons.ac_unit),
+    Item(Color(0xffa2206a), Icons.backup),
+    Item(Color(0xffa2206a), Icons.child_friendly),
+    Item(Color(0xffe4b422), Icons.image),
+    Item(Color(0xffe4b422), Icons.money_off),
+    Item(Color(0xffe4b422), Icons.alarm_on),
+    Item(Color(0xffe4b422), Icons.adb),
+    Item(Color(0xffe4b422), Icons.map),
+    Item(Color(0xffe4b422), Icons.accessible_forward),
+    Item(Color(0xff512a7b), Icons.ac_unit),
+    Item(Color(0xff512a7b), Icons.backup),
+    Item(Color(0xff512a7b), Icons.child_friendly),
+    Item(Color(0xff512a7b), Icons.image),
+    Item(Color(0xff512a7b), Icons.money_off),
+    Item(Color(0xff512a7b), Icons.alarm_on),
+    Item(Color(0xff359d44), Icons.adb),
+    Item(Color(0xff359d44), Icons.map),
+    Item(Color(0xff359d44), Icons.accessible_forward),
+    Item(Color(0xff359d44), Icons.ac_unit),
+    Item(Color(0xff359d44), Icons.backup),
+    Item(Color(0xff359d44), Icons.child_friendly),
+    Item(Color(0xff282e78), Icons.image),
+    Item(Color(0xff282e78), Icons.money_off),
+    Item(Color(0xff282e78), Icons.alarm_on),
+    Item(Color(0xff282e78), Icons.adb),
+    Item(Color(0xff282e78), Icons.map),
+    Item(Color(0xff282e78), Icons.accessible_forward),
+    Item(Color(0xff0b80a1), Icons.ac_unit),
+    Item(Color(0xff0b80a1), Icons.backup),
+    Item(Color(0xff0b80a1), Icons.child_friendly),
+    Item(Color(0xff0b80a1), Icons.image),
+    Item(Color(0xff0b80a1), Icons.money_off),
+    Item(Color(0xff0b80a1), Icons.alarm_on),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.only(top: 32, bottom: 32),
-      itemCount: 48,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemBuilder: (BuildContext context, int position) {
-        final player = snapshot.data[position];
-        return Padding(
-          padding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
-          child: Row(
-            children: <Widget>[
-              Image(
-                width: 64,
-                height: 64,
-                image: AssetImage(player.image),
-              ),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 8, bottom: 8, left: 12, right: 8),
-                        child: Text(
-                          '${player.name}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cards"),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: GridView.builder(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            itemCount: data.length,
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            itemBuilder: (BuildContext context, int position) {
+              return GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Card(
+                  color: data[position].color,
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Icon(
+                      data[position].image,
+                      size: 64,
+                      color: Colors.white70,
                     ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(left: 8, right: 8),
-                          child: Text(
-                            '💲 ${player.money}',
-                            style: TextStyle(
-                              color: Colors.green[800],
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8, right: 8),
-                          child: Text(
-                            '⭐ ${player.reputation}',
-                            style: TextStyle(
-                              color: Colors.yellow[800],
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

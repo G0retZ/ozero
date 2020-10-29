@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ozero/earnings.dart';
 
+import 'cards_page.dart';
 import 'di/di.dart';
 
 class TurnPage extends StatelessWidget {
@@ -48,6 +49,18 @@ class TurnPage extends StatelessWidget {
                 },
               ),
               Earnings(turn: turns),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CardsPage()),
+                    );
+                  },
+                  child: Text('Add Card'),
+                ),
+              ),
             ],
           ),
         ),
